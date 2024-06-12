@@ -25,7 +25,7 @@ Follow this documentation to set up a Kubernetes cluster on **Ubuntu 22.04 LTS.*
 
 | Role   |    FQDN                   | IP          | OS            | RAM  | CPU | 
 | ------ | ------------------------  | ------------| ------------  | -----| ----|
-|Master  |k8s-master.kloudbytes.com  |172.16.0.100 | Ubuntu 22.04  |  2G  |   2 |
-|Worker  |k8s-worker1.kloudbytes.com |172.16.0.101 | Ubuntu 22.04  |  1G  |   1 |
-|Worker	 |k8s-worker2.kloudbytes.com |172.16.0.102 | Ubuntu 22.04  |  1G  |   1 |
-|Worker	 |k8s-worker3.kloudbytes.com |172.16.0.103 | Ubuntu 22.04	 |  1G  |   1 |
+|Master  |k8s-master.kloudbyteshub.com  |172.16.0.100 | Ubuntu 22.04  |  2G  |   2 |
+|Worker  |k8s-worker1.kloudbyteshub.com |172.16.0.101 | Ubuntu 22.04  |  1G  |   1 |
+|Worker	 |k8s-worker2.kloudbyteshub.com |172.16.0.102 | Ubuntu 22.04  |  1G  |   1 |
+|Worker	 |k8s-worker3.kloudbyteshub.com |172.16.0.103 | Ubuntu 22.04	 |  1G  |   1 |
