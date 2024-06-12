@@ -1,1 +1,1 @@
-# DevOps
+# Certified Kubernetes Administrator (CKA) Course
