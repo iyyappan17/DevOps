@@ -88,3 +88,39 @@ sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config
 systemctl restart containerd
 systemctl enable containerd >/dev/null
 ```
+## k8s v1.29
+#### Add apt repo for Kubernetes and Install Kubernetes components (kubeadm, kubelet and kubectl) v1.29
+
+```
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+```
+```
+sudo apt-get update
+sudo apt-get install -y kubelet=1.29.0-1.1 kubeadm=1.29.0-1.1 kubectl=1.29.0-1.1
+sudo apt-mark hold kubelet kubeadm kubectl
+```
+
+#### Install net-tools components (ifconfig )
+
+```
+apt install -qq -y net-tools >/dev/null 2>&1
+```
+#### Enable ssh password authentication
+
+```
+sed -i 's/^PasswordAuthentication .*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+systemctl reload sshd
+```
+#### Update /etc/hosts file
+
+```
+cat >>/etc/hosts<<EOF
+172.16.0.100   k8s-master.kloudbytes.com     master 
+172.16.0.101   k8s-worker1.kloudbytes.com    worker1 
+172.16.0.102   k8s-worker2.kloudbytes.com    worker2
+172.16.0.103   k8s-worker3.kloudbytes.com    worker3 
+EOF
+```
