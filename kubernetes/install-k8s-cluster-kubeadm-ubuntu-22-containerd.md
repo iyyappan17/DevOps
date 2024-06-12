@@ -8,9 +8,9 @@ Follow this documentation to set up a Kubernetes cluster on **Ubuntu 22.04 LTS.*
 | Software | Version |
 | ------ | ----------- |
 | OS | ubuntu 22.04 |
-| kubeadm | 1.28.0-00 |
-| kubelet | 1.28.0-00 |
-| kubectl | 1.28.0-00 |
+| kubeadm | 1.29.0-00 |
+| kubelet | 1.29.0-00 |
+| kubectl | 1.29.0-00 |
 
 - This documentation guides you in setting up a cluster with one master node and three worker nodes.
 -  If you desire fewer worker nodes, you can install software and join the worker nodes depending on that.
@@ -23,12 +23,12 @@ Follow this documentation to set up a Kubernetes cluster on **Ubuntu 22.04 LTS.*
 3. Each node has to assign the corresponding hostname.
 4. If you are using any cloud provider virtual machine, kindly open the corresponding port number for the k8s cluster.
 
-| Role   |    FQDN                   | IP          | OS            | RAM  | CPU | 
-| ------ | ------------------------  | ------------| ------------  | -----| ----|
-|Master  |k8s-master.kloudbyteshub.com  |172.16.0.100 | Ubuntu 22.04  |  2G  |   2 |
-|Worker  |k8s-worker1.kloudbyteshub.com |172.16.0.101 | Ubuntu 22.04  |  1G  |   1 |
-|Worker	 |k8s-worker2.kloudbyteshub.com |172.16.0.102 | Ubuntu 22.04  |  1G  |   1 |
-|Worker	 |k8s-worker3.kloudbyteshub.com |172.16.0.103 | Ubuntu 22.04	 |  1G  |   1 |
+| Role   |    FQDN                   | IP          | OS                | RAM  | CPU | 
+| ------ | ------------------------  | ------------| ----------------  | -----| ----|
+|Master  |k8s-master.kloudbyteshub.com  |192.168.0.121 | Ubuntu 22.04  |  2G  |   2 |
+|Worker  |k8s-worker1.kloudbyteshub.com |192.168.0.122 | Ubuntu 22.04  |  1G  |   1 |
+|Worker	 |k8s-worker2.kloudbyteshub.com |192.168.0.123 | Ubuntu 22.04  |  1G  |   1 |
+|Worker	 |k8s-worker3.kloudbyteshub.com |192.168.0.124 | Ubuntu 22.04	 |  1G  |   1 |
 
 ## On both Kmaster and Kworker
 #### Login as root user
@@ -92,14 +92,19 @@ systemctl enable containerd >/dev/null
 #### Add apt repo for Kubernetes and Install Kubernetes components (kubeadm, kubelet and kubectl) v1.29
 
 ```
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+apt-get update
+apt-get install -y apt-transport-https ca-certificates curl gpg
+```
 
+```
+mkdir -p -m 755 /etc/apt/keyrings
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 ```
-sudo apt-get update
-sudo apt-get install -y kubelet=1.29.0-1.1 kubeadm=1.29.0-1.1 kubectl=1.29.0-1.1
-sudo apt-mark hold kubelet kubeadm kubectl
+apt-get update
+apt-get install -y kubelet=1.29.1-1.1 kubeadm=1.29.1-1.1 kubectl=1.29.1-1.1
+apt-mark hold kubelet kubeadm kubectl
 ```
 
 #### Install net-tools components (ifconfig )
@@ -118,10 +123,10 @@ systemctl reload sshd
 
 ```
 cat >>/etc/hosts<<EOF
-172.16.0.100   k8s-master.kloudbytes.com     master 
-172.16.0.101   k8s-worker1.kloudbytes.com    worker1 
-172.16.0.102   k8s-worker2.kloudbytes.com    worker2
-172.16.0.103   k8s-worker3.kloudbytes.com    worker3 
+192.168.0.121   k8s-master.kloudbyteshub.com     master 
+192.168.0.122   k8s-worker1.kloudbyteshub.com    worker1 
+192.168.0.123   k8s-worker2.kloudbyteshub.com    worker2
+192.168.0.124   k8s-worker3.kloudbyteshub.com    worker3 
 EOF
 ```
 ## Kubernetes Setup On k8s-master
@@ -135,7 +140,7 @@ kubeadm config images pull
 Note: apiserver-advertise-address is your k8s-master ip address
 
 ```
-kubeadm init --apiserver-advertise-address=172.16.0.100 --pod-network-cidr=192.168.0.0/16 
+kubeadm init --apiserver-advertise-address=192.168.0.121 --pod-network-cidr=172.16.0.0/16 
 ```
 #### Deploy Calico network -- If k8s v1.29
 #### add Calico 3.27.3 CNI
@@ -149,6 +154,12 @@ kubectl apply -f  https://raw.githubusercontent.com/projectcalico/calico/v3.27.3
 kubeadm token create --print-join-command > /print-join-cluster.txt
 ```
 Note: use the "print-join-cluster.txt file for future use to join the worker node into k8s-master.
+
+#### To be able to run kubectl commands as root user
+If you want to be able to run kubectl commands as root user, then as a root user perform these
+```
+export KUBECONFIG=/etc/kubernetes/admin.conf
+```
 
 #### To be able to run kubectl commands as non-root user
 If you want to be able to run kubectl commands as non-root user, then as a non-root user perform these
@@ -169,7 +180,7 @@ complete -o default -F __start_kubectl k
 Use the output from kubeadm token create command in the previous step from the master server and run here.
 ```
 Sample format:
-kubeadm join 172.16.0.100:6443 --token hp9b0k.1g9tqz8vkf4s5h278ucwf  --discovery-token-ca-cert-hash sha256:32eb67948d72ba99aac9b5bb0305d66a48f43b0798cb2df99c8b1c30708bdc2cased24sf
+kubeadm join 192.168.0.121:6443 --token t8j95u.93frfpwydl3z3mbb   --discovery-token-ca-cert-hash sha256:67fac942809be283243bc4ef969f4b6a6135cb737299b00c3409d54b48b2b0f8
 ```
 ## Verifying the cluster (On k8s-master)
 #### Get Kubernetes Cluster Nodes status
