@@ -1,5 +1,5 @@
 # Install Kubernetes Cluster using kubeadm
-___
+
 Follow this documentation to set up a Kubernetes cluster on **Ubuntu 22.04 LTS.**
 
 ## Software and OS used here:
