@@ -164,3 +164,32 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 alias k=kubectl
 complete -o default -F __start_kubectl k
 ```
+## On k8s-worker<*>
+#### Join the worker node into k8s-worker<*>
+Use the output from kubeadm token create command in the previous step from the master server and run here.
+```
+Sample format:
+kubeadm join 172.16.0.100:6443 --token hp9b0k.1g9tqz8vkf4s5h278ucwf  --discovery-token-ca-cert-hash sha256:32eb67948d72ba99aac9b5bb0305d66a48f43b0798cb2df99c8b1c30708bdc2cased24sf
+```
+## Verifying the cluster (On k8s-master)
+#### Get Kubernetes Cluster Nodes status
+```
+kubectl get nodes
+```
+or
+```
+kubectl get no
+kubectl get node
+kubectl get nodes
+```
+The above commands will give the same output.
+
+```
+kubectl get node -o wide
+```
+Note: with node wide option
+
+#### Get component status
+```
+kubectl get cs
+```
