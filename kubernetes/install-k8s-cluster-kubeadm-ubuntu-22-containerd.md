@@ -124,3 +124,43 @@ cat >>/etc/hosts<<EOF
 172.16.0.103   k8s-worker3.kloudbytes.com    worker3 
 EOF
 ```
+## Kubernetes Setup On k8s-master
+
+#### Pull required containers
+
+```
+kubeadm config images pull
+```
+#### Initialize Kubernetes Cluster
+Note: apiserver-advertise-address is your k8s-master ip address
+
+```
+kubeadm init --apiserver-advertise-address=172.16.0.100 --pod-network-cidr=192.168.0.0/16 
+```
+#### Deploy Calico network -- If k8s v1.29
+#### add Calico 3.27.3 CNI
+
+```
+kubectl apply -f  https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/calico.yaml
+```
+#### Cluster join command
+
+```
+kubeadm token create --print-join-command > /print-join-cluster.txt
+```
+Note: use the "print-join-cluster.txt file for future use to join the worker node into k8s-master.
+
+#### To be able to run kubectl commands as non-root user
+If you want to be able to run kubectl commands as non-root user, then as a non-root user perform these
+```
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+#### Kubectl auto-complete and k alias
+
+```
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+alias k=kubectl
+complete -o default -F __start_kubectl k
+```
