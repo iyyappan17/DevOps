@@ -3,7 +3,7 @@
 Follow this documentation to set up a Kubernetes cluster on **Ubuntu 22.04 LTS.**
 
 ## Software and OS used here:
-___
+
 
 | Software | Version |
 | ------ | ----------- |
@@ -16,7 +16,7 @@ ___
 -  If you desire fewer worker nodes, you can install software and join the worker nodes depending on that.
 
 ## Assumptions
-___
+
 
 1. You have 4 physical or virtual machines to create a Kubernetes cluster.
 2. You have to assign a password to each node.
