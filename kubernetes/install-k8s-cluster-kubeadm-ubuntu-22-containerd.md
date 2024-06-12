@@ -179,7 +179,6 @@ complete -o default -F __start_kubectl k
 #### Join the worker node into k8s-worker<*>
 Use the output from kubeadm token create command in the previous step from the master server and run here.
 ```
-Sample format:
 kubeadm join 192.168.0.121:6443 --token t8j95u.93frfpwydl3z3mbb   --discovery-token-ca-cert-hash sha256:67fac942809be283243bc4ef969f4b6a6135cb737299b00c3409d54b48b2b0f8
 ```
 ## Verifying the cluster (On k8s-master)
