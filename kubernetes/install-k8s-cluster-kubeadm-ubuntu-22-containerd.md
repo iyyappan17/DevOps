@@ -1,24 +1,24 @@
-# Install Kubernetes Cluster using kubeadm
+# Installing Kubernetes Cluster using kubeadm way
 
 Follow this documentation to set up a Kubernetes cluster on **Ubuntu 22.04 LTS.**
 
-## Software and OS used here:
+## Software and OS:
 
 
 | Software | Version |
-| ------ | ----------- |
-| OS | ubuntu 22.04 |
+| ------- | ----------- |
+| OS      | Ubuntu 22.04 |
 | kubeadm | 1.29.0-00 |
 | kubelet | 1.29.0-00 |
 | kubectl | 1.29.0-00 |
 
 - This documentation guides you in setting up a cluster with one master node and three worker nodes.
--  If you desire fewer worker nodes, you can install software and join the worker nodes depending on that.
+-  If you desire fewer worker nodes, beased on that you can setup and join the worker node.
 
-## Assumptions
+## Prerequisites
 
 
-1. You have 4 physical or virtual machines to create a Kubernetes cluster.
+1. You need to have 4 physical or virtual machines to create a Kubernetes cluster.
 2. You have to assign a password to each node.
 3. Each node has to assign the corresponding hostname.
 4. If you are using any cloud provider virtual machine, kindly open the corresponding port number for the k8s cluster.
@@ -30,7 +30,7 @@ Follow this documentation to set up a Kubernetes cluster on **Ubuntu 22.04 LTS.*
 |Worker	 |k8s-worker2.kloudbyteshub.com |192.168.0.123 | Ubuntu 22.04  |  1G  |   1 |
 |Worker	 |k8s-worker3.kloudbyteshub.com |192.168.0.124 | Ubuntu 22.04	 |  1G  |   1 |
 
-## On both Kmaster and Kworker
+## Perform following steps On both Kmaster and Kworker
 #### Login as root user
 ```
 sudo su -
@@ -88,7 +88,7 @@ sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config
 systemctl restart containerd
 systemctl enable containerd >/dev/null
 ```
-## k8s v1.29
+## For k8s v1.29 version
 #### Add apt repo for Kubernetes and Install Kubernetes components (kubeadm, kubelet and kubectl) v1.29
 
 ```
@@ -129,7 +129,7 @@ cat >>/etc/hosts<<EOF
 192.168.0.124   k8s-worker3.kloudbyteshub.com    worker3 
 EOF
 ```
-## Kubernetes Setup On k8s-master
+## Perform following steps On k8s-master
 
 #### Pull required containers
 
@@ -175,7 +175,7 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 alias k=kubectl
 complete -o default -F __start_kubectl k
 ```
-## On k8s-worker<*>
+## Perform following steps On k8s-worker<*>
 #### Join the worker node into k8s-worker<*>
 Use the output from kubeadm token create command in the previous step from the master server and run here.
 ```
